@@ -5,3 +5,16 @@
 .Spacing {
   margin-top: 50px;
 }
+
+.M-r-10 {
+  margin-right: 10px;
+}
+
+.M-t-20 {
+  margin-top: 20px;
+}
+
+.CustomButton {
+  background-color: #5cb85c;
+  border-color: #5cb85c;
+}
