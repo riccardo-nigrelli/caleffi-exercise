@@ -18,8 +18,7 @@ export default class App extends React.Component {
     this.state = { 
       author: 'Salmo', 
       error: false,
-      result: [],
-      find: true
+      result: []
     };
     this.handleForm = this.handleForm.bind(this);
     this.updateValue = this.updateValue.bind(this);
@@ -91,7 +90,7 @@ export default class App extends React.Component {
             </thead>
             <tbody>
               {
-                this.state.find ? 
+                this.state.result.length !== 0 ?
                 this.state.result.map((item, key) => {
                   return (
                     <tr key={key}>
