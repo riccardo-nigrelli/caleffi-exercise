@@ -1,9 +1,8 @@
 import './App.css';
 import React from 'react';
-// import { get } from 'axios';
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container, Row, Col, Form, Button, Table, Image } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Table, Image, Alert } from 'react-bootstrap';
 
 import { getArtistSongs } from './api';
 
@@ -18,7 +17,7 @@ export default class App extends React.Component {
     super(props);
     this.state = { 
       author: 'Salmo', 
-      error: false, 
+      error: false,
       result: [],
       find: true
     };
@@ -42,23 +41,8 @@ export default class App extends React.Component {
       document.title = this.state.author;
       
       getArtistSongs(this, this.state.author);
-      
-      // let query = this.state.author.trim().toLowerCase().split(/\s+/).join('+');
-      // get(`https://itunes.apple.com/search?term=${query}&entity=song&limit=50`, {
-      //   headers: {
-      //     'Access-Control-Allow-Origin': '*',
-      //     'Access-Control-Allow-Credentials': true
-      //   }
-      // })
-      // .then((response) => {
-      //   const result = response.data.results;
-      //   this.setState({ result });
-      // })
-      // .catch((err) => {
-      //   alert(err);
-      // });
     }
-    else this.setState({error: true});
+    else this.setState({error: true, result: []});
   }
 
   render() {
@@ -67,6 +51,16 @@ export default class App extends React.Component {
         <h1>iTunes song list</h1>
         <Row>
           <Col md={{ span: 6, offset: 3 }}>
+            {
+              this.state.error ? 
+              <Alert variant='danger' className='M-t-20'>
+                Please enter the name of a singer
+              </Alert> : this.state.result.length === 0 ? 
+              <Alert variant='danger' className='M-t-20'>
+                Ooops! Author not found
+              </Alert>
+              : null
+            }
             <Form className='M-t-20' onSubmit={this.handleForm}>  
               <Form.Group controlId='authorName'>
                 <Form.Control 
