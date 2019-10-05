@@ -1,11 +1,11 @@
 import './App.css';
 import React from 'react';
-import { get } from 'axios';
+// import { get } from 'axios';
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container, Row, Col, Form, Button, Alert, Table, Image } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Table, Image } from 'react-bootstrap';
 
-// import { getArtistSongs } from './api';
+import { getArtistSongs } from './api';
 
 const styleButton = {
   backgroundColor: '#5cb85c', 
@@ -32,23 +32,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     document.title = this.state.author;
-    
-    let query = this.state.author.trim().toLowerCase().split(/\s+/).join('+');
-    console.log(query);
-    get(`https://itunes.apple.com/search?term=${query}&entity=song&limit=50`, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      }
-    })
-    .then((response) => {
-      const result = response.data.results;
-      console.log(result);
-      this.setState({ result });
-    })
-    .catch((err) => {
-      alert(err);
-    })
+    getArtistSongs(this, this.state.author);
   }
 
   handleForm = (e) => {
@@ -56,23 +40,23 @@ export default class App extends React.Component {
     if ( this.state.author !== '' && this.state.author !== 'undefined' ) {
       this.setState({error: false});
       document.title = this.state.author;
-
-      let query = this.state.author.trim().toLowerCase().split(/\s+/).join('+');
-      console.log(query);
-      get(`https://itunes.apple.com/search?term=${query}&entity=song&limit=50`, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Credentials': true
-        }
-      })
-      .then((response) => {
-        const result = response.data.results;
-        console.log(result);
-        this.setState({ result });
-      })
-      .catch((err) => {
-        alert(err);
-      })
+      
+      getArtistSongs(this, this.state.author);
+      
+      // let query = this.state.author.trim().toLowerCase().split(/\s+/).join('+');
+      // get(`https://itunes.apple.com/search?term=${query}&entity=song&limit=50`, {
+      //   headers: {
+      //     'Access-Control-Allow-Origin': '*',
+      //     'Access-Control-Allow-Credentials': true
+      //   }
+      // })
+      // .then((response) => {
+      //   const result = response.data.results;
+      //   this.setState({ result });
+      // })
+      // .catch((err) => {
+      //   alert(err);
+      // });
     }
     else this.setState({error: true});
   }
@@ -108,7 +92,7 @@ export default class App extends React.Component {
                 <th>#</th>
                 <th>Album name</th>
                 <th>Song name</th>
-                <th>Image</th>
+                <th>Cover</th>
               </tr>
             </thead>
             <tbody>
