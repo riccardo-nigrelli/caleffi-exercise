@@ -99,7 +99,7 @@ export default class App extends React.Component {
                       <td className='align-middle'>{item.collectionName}</td>
                       <td className='align-middle'>{item.trackName}</td>
                       <td className='align-middle'>
-                        <Image src={item.artworkUrl100} />
+                        <Image src={item.artworkUrl100 === '' ? 'default.jpg' : item.artworkUrl100} />
                       </td>
                     </tr>
                   )
