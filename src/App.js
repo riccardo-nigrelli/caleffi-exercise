@@ -1,11 +1,11 @@
 import './App.css';
 import React from 'react';
-// import { get } from 'axios';
+import { get } from 'axios';
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Container, Row, Col, Form, Button, Alert, } from 'react-bootstrap'; // Table, Image 
+import { Container, Row, Col, Form, Button, Alert, Table, Image } from 'react-bootstrap';
 
-import { getArtistSongs } from './tool';
+// import { getArtistSongs } from './api';
 
 const styleButton = {
   backgroundColor: '#5cb85c', 
@@ -17,9 +17,10 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      author: 'Post Malone', 
+      author: 'Salmo', 
       error: false, 
-      response: null 
+      result: [],
+      find: true
     };
     this.handleForm = this.handleForm.bind(this);
     this.updateValue = this.updateValue.bind(this);
@@ -31,13 +32,23 @@ export default class App extends React.Component {
 
   componentDidMount() {
     document.title = this.state.author;
+    
     let query = this.state.author.trim().toLowerCase().split(/\s+/).join('+');
-    getArtistSongs(query, (response) => {
-      this.setState({response: response});
-
-      console.log(this.state.response);
-      console.log(this.state.response.length);
-    });
+    console.log(query);
+    get(`https://itunes.apple.com/search?term=${query}&entity=song&limit=50`, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      }
+    })
+    .then((response) => {
+      const result = response.data.results;
+      console.log(result);
+      this.setState({ result });
+    })
+    .catch((err) => {
+      alert(err);
+    })
   }
 
   handleForm = (e) => {
@@ -47,11 +58,21 @@ export default class App extends React.Component {
       document.title = this.state.author;
 
       let query = this.state.author.trim().toLowerCase().split(/\s+/).join('+');
-      getArtistSongs(query, (response) => {
-        this.setState({response: response});
-        console.log(this.state.response);
-        console.log(this.state.response.length);
-      });
+      console.log(query);
+      get(`https://itunes.apple.com/search?term=${query}&entity=song&limit=50`, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        }
+      })
+      .then((response) => {
+        const result = response.data.results;
+        console.log(result);
+        this.setState({ result });
+      })
+      .catch((err) => {
+        alert(err);
+      })
     }
     else this.setState({error: true});
   }
@@ -62,13 +83,6 @@ export default class App extends React.Component {
         <h1>iTunes song list</h1>
         <Row>
           <Col md={{ span: 6, offset: 3 }}>
-          {
-            this.state.error ? 
-            <Alert variant='danger' className='M-t-20'>
-              Please enter the name of a singer
-            </Alert> : null
-          }
-
             <Form className='M-t-20' onSubmit={this.handleForm}>  
               <Form.Group controlId='authorName'>
                 <Form.Control 
@@ -87,6 +101,35 @@ export default class App extends React.Component {
               </Button>
             </Form>
           </Col>
+
+          <Table responsive className='Spacing'>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Album name</th>
+                <th>Song name</th>
+                <th>Image</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                this.state.find ? 
+                this.state.result.map((item, key) => {
+                  return (
+                    <tr key={key}>
+                      <td className='align-middle'>{key + 1}</td>
+                      <td className='align-middle'>{item.collectionName}</td>
+                      <td className='align-middle'>{item.trackName}</td>
+                      <td className='align-middle'>
+                        <Image src={item.artworkUrl100} />
+                      </td>
+                    </tr>
+                  )
+                })
+                : null
+              }
+            </tbody>
+          </Table>
         </Row>        
       </Container>
     );
